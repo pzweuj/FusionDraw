@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-labelledby="title desc">
+  <title id="title">FusionDraw logo</title>
+  <desc id="desc">Two colored genomic tracks merge at a central node.</desc>
+  <defs>
+    <linearGradient id="background" x1="6" y1="5" x2="42" y2="44" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#172033" />
+      <stop offset="1" stop-color="#34205f" />
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.6" />
+    </filter>
+  </defs>
+  <rect x="1" y="1" width="46" height="46" rx="14" fill="url(#background)" />
+  <rect x="1" y="1" width="46" height="46" rx="14" fill="none" stroke="#fff" stroke-opacity=".16" />
+
+  <path d="M12 14C17.5 14 18.5 19.5 24 24S30.5 34 36 34" fill="none" stroke="#63d8ff" stroke-linecap="round" stroke-width="7" opacity=".22" filter="url(#glow)" />
+  <path d="M36 14C30.5 14 29.5 19.5 24 24S17.5 34 12 34" fill="none" stroke="#b794f4" stroke-linecap="round" stroke-width="7" opacity=".22" filter="url(#glow)" />
+  <path d="M12 14C17.5 14 18.5 19.5 24 24S30.5 34 36 34" fill="none" stroke="#63d8ff" stroke-linecap="round" stroke-width="4.5" />
+  <path d="M36 14C30.5 14 29.5 19.5 24 24S17.5 34 12 34" fill="none" stroke="#b794f4" stroke-linecap="round" stroke-width="4.5" />
+
+  <circle cx="12" cy="14" r="2.4" fill="#63d8ff" />
+  <circle cx="36" cy="14" r="2.4" fill="#b794f4" />
+  <circle cx="12" cy="34" r="2.4" fill="#b794f4" />
+  <circle cx="36" cy="34" r="2.4" fill="#63d8ff" />
+  <circle cx="24" cy="24" r="4.1" fill="#fff" />
+  <path d="M21.9 24h4.2" fill="none" stroke="#172033" stroke-linecap="round" stroke-width="1.8" />
+</svg>

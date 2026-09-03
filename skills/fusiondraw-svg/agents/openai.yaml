@@ -1,0 +1,5 @@
+interface:
+  display_name: "FusionDraw SVG"
+  short_description: "Generate fusion diagrams through the SVG API"
+  brand_color: "#7C3AED"
+  default_prompt: "Use $fusiondraw-svg to turn the supplied fusion details into an SVG diagram."

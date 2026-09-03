@@ -10,15 +10,15 @@ import "./styles.css";
 const text = {
   en: {
     assembly: "Assembly", five: "5′ partner", three: "3′ partner",
-    gene: "Gene", chromosome: "Chromosome", breakpoint: "Breakpoint", transcript: "Transcript ID", baseSequence: "Base sequence", strand: "Strand", exons: "Total exons", breakpointExon: "Breakpoint exon", color: "Color", showAllExons: "Show all exon numbers", breakpointMode: "Breakpoint location",
-    generate: "Generate diagram", download: "Download SVG", saveJson: "Export PlotSpec", importJson: "Import PlotSpec",
+    gene: "Gene", chromosome: "Chromosome", breakpoint: "Breakpoint", transcript: "Transcript ID", baseSequence: "Base sequence", strand: "Strand", exons: "Total exons", breakpointExon: "Breakpoint exon", color: "Color", showAllExons: "Show all exon numbers", breakpointMode: "Breakpoint location", breakpointBoundary: "Exon boundary", breakpointInterior: "Exon interior", breakpointIntron: "Intron",
+    generate: "Generate diagram", download: "Download SVG", saveJson: "Export PlotSpec", importJson: "Import PlotSpec", github: "View FusionDraw on GitHub",
     empty: "No diagram yet", ready: "PlotSpec ready", warning: "Messages", diagnosis: "Research illustration · Not for clinical diagnosis",
     choose: "Enter two partners and press Generate.",
   },
   "zh-CN": {
     assembly: "组装版本", five: "5′ 端伙伴", three: "3′ 端伙伴",
-    gene: "基因", chromosome: "染色体", breakpoint: "断点", transcript: "转录本编号", baseSequence: "碱基序列", strand: "链", exons: "总外显子数目", breakpointExon: "断点外显子编号", color: "颜色", showAllExons: "显示所有外显子编号", breakpointMode: "断点位置",
-    generate: "生成图形", download: "下载 SVG", saveJson: "导出 PlotSpec", importJson: "导入 PlotSpec",
+    gene: "基因", chromosome: "染色体", breakpoint: "断点", transcript: "转录本编号", baseSequence: "碱基序列", strand: "链", exons: "总外显子数目", breakpointExon: "断点外显子编号", color: "颜色", showAllExons: "显示所有外显子编号", breakpointMode: "断点位置", breakpointBoundary: "外显子边界", breakpointInterior: "外显子内部", breakpointIntron: "内含子",
+    generate: "生成图形", download: "下载 SVG", saveJson: "导出 PlotSpec", importJson: "导入 PlotSpec", github: "在 GitHub 查看 FusionDraw",
     empty: "尚未生成图形", ready: "PlotSpec 已就绪", warning: "消息", diagnosis: "科研示意图 · 不用于临床诊断",
     choose: "输入两个伙伴基因后生成。",
   },
@@ -283,8 +283,20 @@ function App() {
 
   return <main className="app-shell">
     <header className="topbar">
-      <div className="topbar-brand"><h1>FusionDraw</h1><span className="eyebrow">FUSION SVG RENDERING ENGINE</span><span className="tagline">{t.diagnosis}</span></div>
+      <div className="topbar-brand">
+        <div className="brand-lockup">
+          <img className="brand-logo" src="/fusiondraw-logo.svg" alt="" aria-hidden="true" />
+          <h1 className="brand-wordmark">Fusion<span>Draw</span></h1>
+        </div>
+        <span className="eyebrow">FUSION SVG RENDERING ENGINE</span>
+        <span className="tagline">{t.diagnosis}</span>
+      </div>
       <div className="top-actions">
+        <a className="github-link" href="https://github.com/pzweuj/FusionDraw" target="_blank" rel="noreferrer" aria-label={t.github} title={t.github}>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.084-.729.084-.729 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.292-1.552 3.297-1.23 3.297-1.23.647 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.81 1.102.81 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+          </svg>
+        </a>
         <button className="lang-toggle" onClick={() => {
           const next: Locale = locale === "en" ? "zh-CN" : "en";
           setLocale(next);
@@ -322,7 +334,7 @@ function App() {
             <div className="grid-three">
               <label>{t.exons}<input type="number" min="1" max="99" value={forms[index].exonCount} onChange={(event) => updateForm(index, "exonCount", event.target.value === "" ? 1 : Number(event.target.value))} /></label>
               <label>{t.breakpointExon}<input type="number" min="1" max={forms[index].breakpointMode === "intron" ? Math.max(1, forms[index].exonCount - 1) : Math.max(1, forms[index].exonCount)} value={forms[index].breakpointExon} onChange={(event) => updateForm(index, "breakpointExon", event.target.value === "" ? 1 : Number(event.target.value))} /></label>
-              <label>{t.breakpointMode}<select value={forms[index].breakpointMode} onChange={(event) => updateForm(index, "breakpointMode", event.target.value)}><option value="boundary">Exon boundary</option><option value="interior">Exon interior</option><option value="intron">Intron</option></select></label>
+              <label>{t.breakpointMode}<select value={forms[index].breakpointMode} onChange={(event) => updateForm(index, "breakpointMode", event.target.value)}><option value="boundary">{t.breakpointBoundary}</option><option value="interior">{t.breakpointInterior}</option><option value="intron">{t.breakpointIntron}</option></select></label>
             </div>
             <div className="partner-options">
               <label className="inline-control color-control"><span>{t.color}</span><input className="color-input" aria-label={t.color} type="color" value={forms[index].color} onChange={(event) => updateColor(index, event.target.value)} /></label>
