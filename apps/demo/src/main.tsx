@@ -297,26 +297,43 @@ function App() {
         <div className="canvas-toolbar"><div><span className="status-dot" />{editingSpec ? t.ready : t.empty}</div><div className="toolbar-actions">
           <button disabled={!editingSpec} onClick={exportJson}>{t.saveJson}</button>
           <button onClick={() => importInput.current?.click()}>{t.importJson}</button>
-          <button disabled={!editingSpec} onClick={exportSvg}>{t.download}</button>
           <input ref={importInput} type="file" accept="application/json" onChange={importJson} style={{ display: "none" }} />
         </div></div>
         <div className="preview">{editingSpec ? <FusionView spec={editingSpec} /> : <div className="empty-state"><div className="empty-icon">✦</div><h2>{t.empty}</h2><p>{t.choose}</p></div>}</div>
       </section>
       <aside className="panel editor">
-        {messages.length > 0 && <div className="messages"><strong>{t.warning}</strong>{messages.map((item, index) => <div className={item.severity === "error" ? "error" : "warning"} key={`${item.severity}-${index}`}>{item.text}</div>)}</div>}
-        <label>{t.assembly}<select value={assembly} onChange={(event) => switchAssembly(event.target.value as AssemblyChoice)}><option value="hg38">hg38 / GRCh38</option><option value="hg19">hg19 / GRCh37</option></select></label>
-        {([0, 1] as const).map((index) => <fieldset key={index}>
-          <legend>{index === 0 ? t.five : t.three}</legend>
-          <label>{t.gene}<input value={forms[index].gene} onChange={(event) => updateForm(index, "gene", event.target.value)} /></label>
-          <div className="grid-two"><label>{t.chromosome}<input value={forms[index].chromosome} onChange={(event) => updateForm(index, "chromosome", event.target.value)} /></label><label>{t.breakpoint}<input inputMode="numeric" value={forms[index].breakpoint} onChange={(event) => updateForm(index, "breakpoint", event.target.value)} /></label></div>
-          <div className="grid-two"><label>{t.transcript}<input value={forms[index].transcriptId} onChange={(event) => updateForm(index, "transcriptId", event.target.value)} /></label><label>{t.strand}<select value={forms[index].strand} onChange={(event) => updateForm(index, "strand", event.target.value)}><option value="+">+</option><option value="-">−</option></select></label></div>
-          <label>{t.baseSequence}<input value={forms[index].baseSequence} onChange={(event) => updateForm(index, "baseSequence", event.target.value)} placeholder="CGACGATCGAGATCGATCGACGA" /></label>
-          <div className="grid-two"><label>{t.exons}<input type="number" min="1" max="99" value={forms[index].exonCount} onChange={(event) => updateForm(index, "exonCount", event.target.value === "" ? 1 : Number(event.target.value))} /></label><label>{t.breakpointExon}<input type="number" min="1" max={forms[index].breakpointMode === "intron" ? Math.max(1, forms[index].exonCount - 1) : Math.max(1, forms[index].exonCount)} value={forms[index].breakpointExon} onChange={(event) => updateForm(index, "breakpointExon", event.target.value === "" ? 1 : Number(event.target.value))} /></label></div>
-          <label>{t.breakpointMode}<select value={forms[index].breakpointMode} onChange={(event) => updateForm(index, "breakpointMode", event.target.value)}><option value="boundary">Exon boundary</option><option value="interior">Exon interior</option><option value="intron">Intron</option></select></label>
-          <label>{t.color}<input type="color" value={forms[index].color} onChange={(event) => updateColor(index, event.target.value)} /></label>
-          <label style={{ flexDirection: "row", alignItems: "center", gap: "6px", marginTop: 0 }}><input type="checkbox" checked={forms[index].showAllExonLabels} onChange={(event) => updateForm(index, "showAllExonLabels", event.target.checked)} />{t.showAllExons}</label>
-        </fieldset>)}
-        <button className="primary-button" onClick={generate}>{t.generate}<span>→</span></button>
+        <div className="editor-scroll">
+          {messages.length > 0 && <div className="messages"><strong>{t.warning}</strong>{messages.map((item, index) => <div className={item.severity === "error" ? "error" : "warning"} key={`${item.severity}-${index}`}>{item.text}</div>)}</div>}
+          <label className="assembly-field">{t.assembly}<select value={assembly} onChange={(event) => switchAssembly(event.target.value as AssemblyChoice)}><option value="hg38">hg38 / GRCh38</option><option value="hg19">hg19 / GRCh37</option></select></label>
+          {([0, 1] as const).map((index) => <fieldset className="partner-fields" key={index}>
+            <legend>{index === 0 ? t.five : t.three}</legend>
+            <div className="grid-two">
+              <label>{t.gene}<input value={forms[index].gene} onChange={(event) => updateForm(index, "gene", event.target.value)} /></label>
+              <label>{t.strand}<select value={forms[index].strand} onChange={(event) => updateForm(index, "strand", event.target.value)}><option value="+">+</option><option value="-">−</option></select></label>
+            </div>
+            <div className="grid-two">
+              <label>{t.chromosome}<input value={forms[index].chromosome} onChange={(event) => updateForm(index, "chromosome", event.target.value)} /></label>
+              <label>{t.breakpoint}<input inputMode="numeric" value={forms[index].breakpoint} onChange={(event) => updateForm(index, "breakpoint", event.target.value)} /></label>
+            </div>
+            <div className="grid-two">
+              <label>{t.transcript}<input value={forms[index].transcriptId} onChange={(event) => updateForm(index, "transcriptId", event.target.value)} /></label>
+              <label>{t.baseSequence}<input value={forms[index].baseSequence} onChange={(event) => updateForm(index, "baseSequence", event.target.value)} /></label>
+            </div>
+            <div className="grid-three">
+              <label>{t.exons}<input type="number" min="1" max="99" value={forms[index].exonCount} onChange={(event) => updateForm(index, "exonCount", event.target.value === "" ? 1 : Number(event.target.value))} /></label>
+              <label>{t.breakpointExon}<input type="number" min="1" max={forms[index].breakpointMode === "intron" ? Math.max(1, forms[index].exonCount - 1) : Math.max(1, forms[index].exonCount)} value={forms[index].breakpointExon} onChange={(event) => updateForm(index, "breakpointExon", event.target.value === "" ? 1 : Number(event.target.value))} /></label>
+              <label>{t.breakpointMode}<select value={forms[index].breakpointMode} onChange={(event) => updateForm(index, "breakpointMode", event.target.value)}><option value="boundary">Exon boundary</option><option value="interior">Exon interior</option><option value="intron">Intron</option></select></label>
+            </div>
+            <div className="partner-options">
+              <label className="inline-control color-control"><span>{t.color}</span><input className="color-input" aria-label={t.color} type="color" value={forms[index].color} onChange={(event) => updateColor(index, event.target.value)} /></label>
+              <label className="inline-control checkbox-control"><input type="checkbox" checked={forms[index].showAllExonLabels} onChange={(event) => updateForm(index, "showAllExonLabels", event.target.checked)} /><span>{t.showAllExons}</span></label>
+            </div>
+          </fieldset>)}
+        </div>
+        <div className="editor-actions">
+          <button className="primary-button" onClick={generate}>{t.generate}<span>→</span></button>
+          <button className="secondary-button" disabled={!editingSpec} onClick={exportSvg}>{t.download}</button>
+        </div>
       </aside>
     </section>
   </main>;
