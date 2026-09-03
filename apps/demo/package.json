@@ -1,0 +1,14 @@
+{
+  "name": "@fusionview/demo",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {
+    "@fusionview/annotation": "workspace:*",
+    "@fusionview/core": "workspace:*",
+    "@fusionview/react": "workspace:*",
+    "@fusionview/renderer-svg": "workspace:*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}

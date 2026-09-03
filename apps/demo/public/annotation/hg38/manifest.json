@@ -1,0 +1,22 @@
+{
+  "annotationSource": {
+    "name": "GENCODE",
+    "sha256": "227dd5f61f2ce813a1a9d44783d3d75c95eb96d244e0d2cc5b03692214d79bdd",
+    "url": "https://www.gencodegenes.org/human/",
+    "version": "demo-fixture"
+  },
+  "assembly": "hg38",
+  "checksum": "9bac4f1fcbc8161e2830982ad0f1d839247dcab73dcdf93bcceb08d829b4692c",
+  "chromosomeCount": 25,
+  "coordinateSystem": "1-based-inclusive",
+  "cytobandSource": {
+    "name": "cytoBand.hg38.txt",
+    "sha256": "ce1b6033a5243e7c5022660b952d2ec33243e307e909afcaeec1894641a5208f"
+  },
+  "indexUrl": "index.json",
+  "schemaVersion": "0.1",
+  "shardChecksums": {
+    "chr2-a.json": "ad856d13e7870eb86835f513af523f26ce6568ef65b41c6c1a2c8ba576b67da1"
+  },
+  "shardPattern": "{shard}"
+}

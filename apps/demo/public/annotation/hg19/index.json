@@ -1,0 +1,4 @@
+[
+  { "symbol": "CIC", "id": "ENSG00000079432", "chromosome": "chr19", "shard": "chr19-c.json" },
+  { "symbol": "DUX4", "id": "ENSG00000214694", "chromosome": "chr4", "shard": "chr4-d.json" }
+]

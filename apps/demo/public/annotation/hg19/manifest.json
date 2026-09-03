@@ -1,0 +1,23 @@
+{
+  "annotationSource": {
+    "name": "GENCODE",
+    "sha256": "227dd5f61f2ce813a1a9d44783d3d75c95eb96d244e0d2cc5b03692214d79bdd",
+    "url": "https://www.gencodegenes.org/human/",
+    "version": "demo-fixture-lift37"
+  },
+  "assembly": "hg19",
+  "checksum": "48dc3aab0d941d2e5f95463558e4161807dc25b2a59f58d807bd3f0553b4c8ee",
+  "chromosomeCount": 24,
+  "coordinateSystem": "1-based-inclusive",
+  "cytobandSource": {
+    "name": "cytoBand.hg19.txt",
+    "sha256": "c296fe7d73eafae12569ef7b57c2876c2181f70a79e476c00fb4611ababb2439"
+  },
+  "indexUrl": "index.json",
+  "schemaVersion": "0.1",
+  "shardChecksums": {
+    "chr19-c.json": "b0713942601d5c34041b20a40baecefec23028abd51cc1117b7189b91c6d622d",
+    "chr4-d.json": "897cf722b169b8bdd78d7e0ad09bc08e0cf24a9e45abd997e44b5c3bfbc5048c"
+  },
+  "shardPattern": "{shard}"
+}

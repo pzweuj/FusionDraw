@@ -1,0 +1,9 @@
+{
+  "name": "@fusionview/react",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "peerDependencies": { "react": ">=18" },
+  "dependencies": { "@fusionview/core": "workspace:*", "@fusionview/layout": "workspace:*" }
+}

@@ -1,0 +1,2 @@
+chr1	0	500	p11	gneg
+chr1	500	1000	q11	gpos50

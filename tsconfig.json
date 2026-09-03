@@ -1,0 +1,11 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/core/tsconfig.json" },
+    { "path": "packages/annotation/tsconfig.json" },
+    { "path": "packages/layout/tsconfig.json" },
+    { "path": "packages/renderer-svg/tsconfig.json" },
+    { "path": "packages/react/tsconfig.json" },
+    { "path": "apps/demo/tsconfig.json" }
+  ]
+}

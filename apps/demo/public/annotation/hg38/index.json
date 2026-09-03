@@ -1,0 +1,4 @@
+[
+  { "symbol": "ALK", "id": "ENSG00000171094", "chromosome": "chr2", "shard": "chr2-a.json" },
+  { "symbol": "EML4", "id": "ENSG00000197530", "chromosome": "chr2", "shard": "chr2-a.json" }
+]

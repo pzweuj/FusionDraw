@@ -1,0 +1,3 @@
+[
+  { "id": "ENSG00000214694", "symbol": "DUX4", "chromosome": "chr4", "start": 190950000, "end": 191050000, "strand": "+", "transcripts": [{ "id": "ENST00000521589.1", "start": 190950000, "end": 191050000, "strand": "+", "canonical": true, "cdsLength": 3200, "exons": [{ "id": "DUX4.1", "start": 190950000, "end": 190950800, "exonNumber": 1, "cdsStart": 190950080, "cdsEnd": 190950760 }, { "id": "DUX4.2", "start": 190980000, "end": 190980800, "exonNumber": 2, "cdsStart": 190980080, "cdsEnd": 190980760 }, { "id": "DUX4.3", "start": 191000000, "end": 191000800, "exonNumber": 3, "cdsStart": 191000080, "cdsEnd": 191000760 }, { "id": "DUX4.4", "start": 191040000, "end": 191050000, "exonNumber": 4, "cdsStart": 191040080, "cdsEnd": 191049960 }] } ] }
+]

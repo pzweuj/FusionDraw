@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fusionview.dev/schema/fusion-plot-spec-0.1.json",
+  "title": "FusionDraw FusionPlotSpec",
+  "type": "object",
+  "required": ["specVersion", "coordinateSystem", "locale", "fivePrime", "threePrime", "fusion"],
+  "properties": {
+    "specVersion": { "const": "0.1" },
+    "assembly": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "coordinateSystem": { "const": "1-based-inclusive" },
+    "locale": { "enum": ["en", "zh-CN"] },
+    "fivePrime": { "$ref": "#/$defs/partner" },
+    "threePrime": { "$ref": "#/$defs/partner" },
+    "fusion": { "$ref": "#/$defs/fusion" },
+    "chromosomeView": { "$ref": "#/$defs/chromosomeView" },
+    "geneView": { "$ref": "#/$defs/geneView" },
+    "style": { "$ref": "#/$defs/style" },
+    "provenance": { "$ref": "#/$defs/provenance" }
+  },
+  "$defs": {
+    "exon": {
+      "type": "object",
+      "required": ["label"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1, "pattern": "\\S" },
+        "id": { "type": "string", "minLength": 1, "pattern": "\\S" },
+        "genomicStart": { "type": "integer", "minimum": 1 },
+        "genomicEnd": { "type": "integer", "minimum": 1 },
+        "width": { "type": "number", "exclusiveMinimum": 0 },
+        "type": { "enum": ["coding", "utr", "unknown"] },
+        "breakpoint": { "type": "boolean" },
+        "visible": { "type": "boolean" },
+        "biological": { "$ref": "#/$defs/biologicalOverride" },
+        "visual": { "$ref": "#/$defs/visualOverride" }
+      },
+      "allOf": [
+        { "if": { "required": ["genomicStart"] }, "then": { "required": ["genomicEnd"] } },
+        { "if": { "required": ["genomicEnd"] }, "then": { "required": ["genomicStart"] } }
+      ],
+      "additionalProperties": true
+    },
+    "transcript": { "type": "object", "required": ["exons"], "properties": { "id": { "type": "string", "minLength": 1, "pattern": "\\S" }, "displayName": { "type": "string" }, "exons": { "type": "array", "items": { "$ref": "#/$defs/exon" } } }, "additionalProperties": true },
+    "partner": { "type": "object", "required": ["gene", "transcript"], "properties": { "gene": { "type": "object", "required": ["symbol"], "properties": { "symbol": { "type": "string", "minLength": 1, "pattern": "\\S" }, "id": { "type": "string", "minLength": 1, "pattern": "\\S" }, "displayName": { "type": "string" } } }, "chromosome": { "type": "string", "minLength": 1, "pattern": "\\S" }, "breakpoint": { "type": "integer", "minimum": 1 }, "strand": { "enum": ["+", "-"] }, "transcript": { "$ref": "#/$defs/transcript" }, "availableTranscripts": { "type": "array", "items": { "type": "object", "required": ["id"], "properties": { "id": { "type": "string", "minLength": 1, "pattern": "\\S" }, "displayName": { "type": "string" } }, "additionalProperties": true } }, "resolution": { "$ref": "#/$defs/resolution" }, "cytoband": { "type": "string", "pattern": "\\S" }, "chromosomeLength": { "type": "integer", "minimum": 1 }, "chromosomeBands": { "type": "array", "items": { "$ref": "#/$defs/cytoband" } }, "manual": { "type": "boolean" }, "baseSequence": { "type": "string" } }, "additionalProperties": true },
+    "fusion": { "type": "object", "required": ["name", "fivePrimeExons", "threePrimeExons"], "properties": { "name": { "type": "string", "minLength": 1, "pattern": "\\S" }, "fivePrimeExons": { "type": "array", "items": { "$ref": "#/$defs/exon" } }, "threePrimeExons": { "type": "array", "items": { "$ref": "#/$defs/exon" } } }, "additionalProperties": false },
+    "chromosomeView": { "type": "object", "properties": { "show": { "type": "boolean" }, "showCytoband": { "type": "boolean" } }, "additionalProperties": false },
+    "geneView": { "type": "object", "properties": { "layout": { "enum": ["schematic", "genomic"] }, "visibleExonsBefore": { "type": "integer", "minimum": 0 }, "visibleExonsAfter": { "type": "integer", "minimum": 0 } }, "additionalProperties": false },
+    "style": { "type": "object", "properties": { "primaryColor": { "type": "string", "minLength": 1, "pattern": "\\S" }, "secondaryColor": { "type": "string", "minLength": 1, "pattern": "\\S" }, "breakpointColor": { "type": "string", "minLength": 1, "pattern": "\\S" }, "fontFamily": { "type": "string", "minLength": 1, "pattern": "\\S" }, "fontSize": { "type": "number", "exclusiveMinimum": 0 } }, "additionalProperties": false },
+    "provenance": { "type": "object", "properties": { "source": { "type": "string" }, "annotationVersion": { "type": "string" }, "annotationChecksum": { "type": "string" }, "generatedAt": { "type": "string" } }, "additionalProperties": false },
+    "biologicalOverride": { "type": "object", "properties": { "genomicStart": { "type": "integer", "minimum": 1 }, "genomicEnd": { "type": "integer", "minimum": 1 }, "type": { "enum": ["coding", "utr", "unknown"] }, "breakpoint": { "type": "boolean" } }, "allOf": [ { "if": { "required": ["genomicStart"] }, "then": { "required": ["genomicEnd"] } }, { "if": { "required": ["genomicEnd"] }, "then": { "required": ["genomicStart"] } } ], "additionalProperties": false },
+    "visualOverride": { "type": "object", "properties": { "label": { "type": "string", "minLength": 1, "pattern": "\\S" }, "width": { "type": "number", "exclusiveMinimum": 0 }, "visible": { "type": "boolean" } }, "additionalProperties": false },
+    "cytoband": { "type": "object", "required": ["name", "start", "end"], "properties": { "name": { "type": "string", "minLength": 1, "pattern": "\\S" }, "start": { "type": "integer", "minimum": 1 }, "end": { "type": "integer", "minimum": 1 }, "stain": { "type": "string" } }, "additionalProperties": false },
+    "resolution": { "type": "object", "required": ["transcriptId", "chromosome", "position", "strand", "region", "codingRegion"], "properties": { "transcriptId": { "type": "string", "minLength": 1, "pattern": "\\S" }, "chromosome": { "type": "string", "minLength": 1, "pattern": "\\S" }, "position": { "type": "integer", "minimum": 1 }, "strand": { "enum": ["+", "-"] }, "region": { "enum": ["exon", "intron", "outside"] }, "codingRegion": { "enum": ["cds", "utr", "noncoding", "unknown"] }, "exonNumber": { "type": "integer", "minimum": 1 }, "exonOffset": { "type": "integer", "minimum": 1 }, "intronNumber": { "type": "integer", "minimum": 1 }, "breakpointLocation": { "enum": ["boundary", "interior"] }, "cytoband": { "type": "string", "minLength": 1, "pattern": "\\S" } }, "additionalProperties": false }
+  }
+}
