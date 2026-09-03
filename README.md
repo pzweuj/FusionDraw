@@ -91,6 +91,24 @@ curl.exe -X POST https://fusiondraw.biotools.space/api/render-svg `
 - 浏览器 CORS 预检使用 `OPTIONS`，返回 `204`。
 - 其他 HTTP 方法返回 `405`，允许的方法为 `POST, OPTIONS`。
 
+## Vercel 部署
+
+仓库根目录已包含 `vercel.json`，用于让 Vercel 在 workspace 根目录执行构建，
+并将 Vite 产物目录指向 `apps/demo/dist`。Vercel 项目应使用仓库根目录作为
+Root Directory，不要将 Root Directory 设置为 `apps/demo`。
+
+部署后，预期的页面和生图接口分别为：
+
+```text
+https://fusiondraw.biotools.space/
+https://fusiondraw.biotools.space/api/render-svg
+```
+
+生产 API 由 `api/render-svg.ts` 提供，不依赖只在 Vite 开发环境存在的 API
+插件。自定义域名需要在 Vercel 项目设置中绑定，并按 Vercel 给出的 DNS
+记录完成域名解析；代码仓库中的部署地址是计划地址，只有请求实际成功后才
+能确认已经上线。
+
 ## Agent 技能
 
 项目内的 [FusionDraw SVG 技能](skills/fusiondraw-svg/SKILL.md)用于让 Agent 根据用户提供的绘图信息生成 SVG。

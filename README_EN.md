@@ -91,6 +91,19 @@ Response contract:
 - Browser CORS preflight uses `OPTIONS` and returns `204`.
 - Other methods return `405`; allowed methods are `POST, OPTIONS`.
 
+## Vercel deployment
+
+The repository includes `vercel.json` so Vercel builds from the workspace root and serves the Vite output from `apps/demo/dist`. Set the Vercel project's Root Directory to the repository root; do not set it to `apps/demo`.
+
+After deployment, the planned page and render endpoint are:
+
+```text
+https://fusiondraw.biotools.space/
+https://fusiondraw.biotools.space/api/render-svg
+```
+
+The production API is implemented by `api/render-svg.ts` and does not depend on the Vite-only development API plugin. Bind the custom domain in the Vercel project settings and configure the DNS records Vercel provides. The repository URL is a planned deployment address; consider it live only after an actual request succeeds.
+
 ## Agent skill
 
 The project-level [FusionDraw SVG skill](skills/fusiondraw-svg/SKILL.md) instructs an Agent to generate SVG from user-provided drawing information.
