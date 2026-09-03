@@ -2,12 +2,13 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { renderSvgApiPlugin } from "./src/api";
 
 const appDir = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineConfig({
   root: appDir,
-  plugins: [react()],
+  plugins: [react(), renderSvgApiPlugin()],
   resolve: {
     alias: {
       "@fusionview/core": resolve(appDir, "../../packages/core/src"),

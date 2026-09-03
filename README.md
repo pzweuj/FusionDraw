@@ -11,6 +11,20 @@ pnpm test
 pnpm typecheck
 ```
 
+While the demo is running, the Vite server also exposes `POST /api/render-svg`.
+Send a complete PlotSpec as a JSON request body to receive an SVG response:
+
+```bash
+curl.exe -X POST http://127.0.0.1:5173/api/render-svg `
+  -H "Content-Type: application/json" `
+  --data-binary "@fusiondraw.json" `
+  -o fusiondraw.svg
+```
+
+The endpoint returns `image/svg+xml` for a valid PlotSpec, `400` with a JSON
+error for invalid input, and supports `OPTIONS` for browser clients while the
+demo is running with `pnpm dev`.
+
 `pnpm test` runs the TypeScript suite and the annotation compiler's Python
 determinism/tag suite (`pnpm test:annotation`).
 
