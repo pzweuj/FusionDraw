@@ -7,6 +7,13 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@fusionview/core':
+        specifier: workspace:*
+        version: link:packages/core
+      '@fusionview/renderer-svg':
+        specifier: workspace:*
+        version: link:packages/renderer-svg
     devDependencies:
       '@types/node':
         specifier: ^22.10.2

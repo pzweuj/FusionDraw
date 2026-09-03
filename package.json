@@ -12,6 +12,10 @@
     "build:annotation": "python3 annotation-builder/build_annotation.py || python annotation-builder/build_annotation.py"
   },
   "workspaces": ["apps/*", "packages/*"],
+  "dependencies": {
+    "@fusionview/core": "workspace:*",
+    "@fusionview/renderer-svg": "workspace:*"
+  },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
     "@types/react": "^18.3.12",
