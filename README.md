@@ -26,7 +26,7 @@ pnpm typecheck
 
 ### 地址
 
-计划中的生产 API 地址为：
+线上生产 API 地址为：
 
 ```text
 POST https://fusiondraw.biotools.space/api/render-svg
@@ -71,7 +71,7 @@ POST http://127.0.0.1:5173/api/render-svg
 - 顶层必须包含 `specVersion: "0.1"`、`coordinateSystem: "1-based-inclusive"`、`locale`（`en` 或 `zh-CN`）、`fivePrime`、`threePrime` 和 `fusion`。
 - 每个伙伴必须包含基因符号，以及带有 `exons` 数组的 `transcript`。
 - `fusion.fivePrimeExons` 和 `fusion.threePrimeExons` 表示融合后保留的外显子段。表示真实外显子范围时，应为每个外显子使用一个对象，不要只写一个 `1-13` 范围字符串。
-- 如果要显示染色体/基因组视图，需要为每个伙伴提供 `assembly`、染色体、1-based inclusive 的断点坐标和链方向；如果提供 `resolution`，还需要完整且相互一致的转录本编号、外显子/内含子编号等字段。
+- 如果要显示染色体/基因组视图，需要在顶层提供 `assembly`，并为每个伙伴提供染色体、1-based inclusive 的断点坐标和链方向；如果提供 `resolution`，必须包含 `transcriptId`、`chromosome`、`position`、`strand`、`region` 和 `codingRegion`，并在 `region` 为 `exon` 或 `intron` 时分别提供 `exonNumber` 或 `intronNumber`。这些字段必须与对应伙伴保持一致。
 
 ### 调用示例
 
@@ -88,6 +88,7 @@ curl.exe -X POST https://fusiondraw.biotools.space/api/render-svg `
 
 - 有效 PlotSpec 返回 `200` 和 `image/svg+xml`。
 - 无效 PlotSpec 返回 `400` 和包含 `error` 字段的 JSON。
+- 服务端错误返回 `500`；应记录响应详情，不要盲目重复请求。
 - 浏览器 CORS 预检使用 `OPTIONS`，返回 `204`。
 - 其他 HTTP 方法返回 `405`，允许的方法为 `POST, OPTIONS`。
 
@@ -106,8 +107,7 @@ https://fusiondraw.biotools.space/api/render-svg
 
 生产 API 由 `api/render-svg.ts` 提供，不依赖只在 Vite 开发环境存在的 API
 插件。自定义域名需要在 Vercel 项目设置中绑定，并按 Vercel 给出的 DNS
-记录完成域名解析；代码仓库中的部署地址是计划地址，只有请求实际成功后才
-能确认已经上线。
+记录完成域名解析；部署地址已经上线，并可通过上述地址访问页面和生图接口。
 
 ## Agent 技能
 
@@ -119,8 +119,8 @@ Agent 应当：
 - 在示意图请求中，至少收集两个伙伴的基因符号和两侧保留的融合外显子段。
 - 如果信息不完整，先一次性提出针对性的补充问题，再调用 API；不能仅凭融合名称擅自猜测转录本、外显子范围或基因组坐标。
 - 如果用户没有真实生物学数据，可以先询问是否接受使用占位外显子生成抽象示意图，并明确说明其限制。
-- 如果用户要求真实基因组视图，补充收集 assembly、染色体、断点坐标、链方向和必要的转录本/resolution 信息。
-- 优先使用计划生产地址 `https://fusiondraw.biotools.space`；用户指定地址优先，生产地址不可用且任务允许本地开发时再使用本地 Vite 地址。
+- 如果用户要求真实基因组视图，补充收集顶层 assembly、染色体、断点坐标、链方向和必要的转录本/resolution 信息。
+- 默认使用线上生产地址 `https://fusiondraw.biotools.space`；用户指定地址优先，生产地址不可用且任务允许本地开发时再使用本地 Vite 地址。
 - 成功返回 SVG 后，按用户要求直接返回或保存为 `.svg` 文件；不要将 SVG 误称为 PNG/JPG，也不要将其解释为临床诊断。
 
 技能也可以显式调用：

@@ -9,7 +9,7 @@ The project produces research illustrations and report graphics. It is not inten
 ## Project links
 
 - GitHub repository: [pzweuj/FusionDraw](https://github.com/pzweuj/FusionDraw)
-- Planned deployment: [https://fusiondraw.biotools.space](https://fusiondraw.biotools.space)
+- Live deployment: [https://fusiondraw.biotools.space](https://fusiondraw.biotools.space)
 
 ## Development
 
@@ -26,7 +26,7 @@ When `pnpm dev` is running, Vite prints the actual URL. If port 5173 is occupied
 
 ### URLs
 
-The planned production API is:
+The live production API is:
 
 ```text
 POST https://fusiondraw.biotools.space/api/render-svg
@@ -71,7 +71,7 @@ This is the smallest coordinate-free request. It is suitable for an abstract sch
 - Top-level fields must include `specVersion: "0.1"`, `coordinateSystem: "1-based-inclusive"`, `locale` (`en` or `zh-CN`), `fivePrime`, `threePrime`, and `fusion`.
 - Each partner needs a gene symbol and a `transcript` with an `exons` array.
 - `fusion.fivePrimeExons` and `fusion.threePrimeExons` are the retained fusion segments. When the labels represent a real exon range, use one object per exon instead of a single range string such as `1-13`.
-- For a chromosome/genomic view, provide `assembly`, chromosome, a 1-based inclusive breakpoint, and strand for each partner. If a `resolution` is included, its transcript ID and exon/intron fields must be complete and consistent with the partner.
+- For a chromosome/genomic view, provide top-level `assembly`, plus chromosome, a 1-based inclusive breakpoint, and strand for each partner. If a `resolution` is included, it must contain `transcriptId`, `chromosome`, `position`, `strand`, `region`, and `codingRegion`; add `exonNumber` for `region: "exon"` or `intronNumber` for `region: "intron"`. These fields must be complete and consistent with the partner.
 
 ### Example
 
@@ -88,6 +88,7 @@ Response contract:
 
 - A valid PlotSpec returns `200` with `image/svg+xml`.
 - An invalid PlotSpec returns `400` with a JSON body containing `error`.
+- A server error returns `500`; report the response details instead of blindly retrying.
 - Browser CORS preflight uses `OPTIONS` and returns `204`.
 - Other methods return `405`; allowed methods are `POST, OPTIONS`.
 
@@ -95,14 +96,14 @@ Response contract:
 
 The repository includes `vercel.json` so Vercel builds from the workspace root and serves the Vite output from `apps/demo/dist`. Set the Vercel project's Root Directory to the repository root; do not set it to `apps/demo`.
 
-After deployment, the planned page and render endpoint are:
+The live page and render endpoint are:
 
 ```text
 https://fusiondraw.biotools.space/
 https://fusiondraw.biotools.space/api/render-svg
 ```
 
-The production API is implemented by `api/render-svg.ts` and does not depend on the Vite-only development API plugin. Bind the custom domain in the Vercel project settings and configure the DNS records Vercel provides. The repository URL is a planned deployment address; consider it live only after an actual request succeeds.
+The production API is implemented by `api/render-svg.ts` and does not depend on the Vite-only development API plugin. Bind the custom domain in the Vercel project settings and configure the DNS records Vercel provides. The deployment is live and the endpoint has been verified with valid and invalid requests.
 
 ## Agent skill
 
@@ -114,8 +115,8 @@ The Agent should:
 - collect both gene symbols and the retained fusion exon segments for a schematic request;
 - ask focused follow-up questions before calling the API when required information is missing, and never invent a transcript, exon range, or genomic coordinate from a fusion name alone;
 - offer an explicitly labelled placeholder schematic when the user lacks biological data;
-- collect assembly, chromosome, breakpoint, strand, and the needed transcript/resolution data for a real genomic view;
-- prefer `https://fusiondraw.biotools.space`, unless the user provides another base URL; use the local Vite URL only when the production endpoint is unavailable and local development is in scope;
+- collect top-level assembly, chromosome, breakpoint, strand, and the needed transcript/resolution data for a real genomic view;
+- prefer the live production URL `https://fusiondraw.biotools.space`, unless the user provides another base URL; use the local Vite URL only when the production endpoint is unavailable and local development is in scope;
 - return or save a successful SVG response as requested, without calling it PNG/JPG or interpreting it as a clinical diagnosis.
 
 The skill can also be invoked explicitly:
