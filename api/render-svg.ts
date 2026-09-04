@@ -1,11 +1,26 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { parsePlotSpec } from "@fusionview/core";
-import { renderFusionSvg } from "@fusionview/renderer-svg";
 
 const MAX_BODY_BYTES = 2 * 1024 * 1024;
 const RENDER_SVG_API_PATH = "/api/render-svg";
 
 type VercelRequest = IncomingMessage & { body?: unknown };
+type RendererRuntime = {
+  parsePlotSpec: typeof import("@fusionview/core").parsePlotSpec;
+  renderFusionSvg: typeof import("@fusionview/renderer-svg").renderFusionSvg;
+};
+
+let rendererRuntimePromise: Promise<RendererRuntime> | undefined;
+
+function rendererRuntime(): Promise<RendererRuntime> {
+  rendererRuntimePromise ??= Promise.all([
+    import("@fusionview/core"),
+    import("@fusionview/renderer-svg"),
+  ]).then(([core, renderer]) => ({
+    parsePlotSpec: core.parsePlotSpec,
+    renderFusionSvg: renderer.renderFusionSvg,
+  }));
+  return rendererRuntimePromise;
+}
 
 class HttpError extends Error {
   constructor(public readonly statusCode: number, message: string) {
@@ -123,9 +138,18 @@ export default async function handler(req: VercelRequest, res: ServerResponse): 
     return;
   }
 
+  let runtime: RendererRuntime;
+  try {
+    runtime = await rendererRuntime();
+  } catch (error) {
+    console.error("Failed to load the SVG renderer runtime.", error);
+    sendJson(res, 500, { error: "SVG renderer is unavailable." });
+    return;
+  }
+
   let svg: string;
   try {
-    svg = renderFusionSvg(parsePlotSpec(body));
+    svg = runtime.renderFusionSvg(runtime.parsePlotSpec(body));
   } catch (error) {
     sendJson(res, 400, { error: error instanceof Error ? error.message : String(error) });
     return;
