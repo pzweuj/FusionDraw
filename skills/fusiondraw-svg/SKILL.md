@@ -36,7 +36,11 @@ Ask missing questions in one message where possible. Locale, colors, gene displa
 
 ## Build the PlotSpec
 
-Send a `FusionPlotSpec` with this required shape:
+Copy the template that matches the user's request, then replace every example value with the user's data. Do not invent biological coordinates just to fill a template. The six required top-level keys are `specVersion`, `coordinateSystem`, `locale`, `fivePrime`, `threePrime`, and `fusion`. Omit unknown optional fields; do not send `null`, empty strings, or fake IDs/coordinates.
+
+### Coordinate-free schematic template
+
+Use this smallest valid template when the user wants an abstract drawing and has no genomic annotation. Keep one object per exon segment; the example uses three retained 5′ segments and two retained 3′ segments.
 
 ```json
 {
@@ -45,25 +49,259 @@ Send a `FusionPlotSpec` with this required shape:
   "locale": "en",
   "fivePrime": {
     "gene": { "symbol": "GENE5" },
-    "transcript": { "exons": [{ "label": "1" }] }
+    "transcript": {
+      "exons": [
+        { "label": "1" },
+        { "label": "2" },
+        { "label": "13" }
+      ]
+    }
   },
   "threePrime": {
     "gene": { "symbol": "GENE3" },
-    "transcript": { "exons": [{ "label": "1" }] }
+    "transcript": {
+      "exons": [
+        { "label": "20" },
+        { "label": "21" }
+      ]
+    }
   },
   "fusion": {
     "name": "GENE5::GENE3",
-    "fivePrimeExons": [{ "label": "1" }],
-    "threePrimeExons": [{ "label": "1" }]
+    "fivePrimeExons": [
+      { "label": "1" },
+      { "label": "2" },
+      { "label": "13" }
+    ],
+    "threePrimeExons": [
+      { "label": "20" },
+      { "label": "21" }
+    ]
   },
   "chromosomeView": { "show": false },
   "style": { "primaryColor": "#2563eb", "secondaryColor": "#7c3aed" }
 }
 ```
 
-Use one exon object per retained segment in `fusion.fivePrimeExons` and `fusion.threePrimeExons`; do not put a range such as `1-13` in place of the individual segments unless the user explicitly wants that as a visual label. The partner transcript must always contain an `exons` array, even for a coordinate-free manual schematic. If a user supplies biological exon data, preserve it rather than replacing it with placeholders.
+### Genomic/chromosome-view template
 
-For a genomic view, add the top-level `assembly` and the complete partner fields (`chromosome`, `breakpoint`, `strand`, and `transcript.id` when resolving a transcript), plus a consistent `resolution`. All coordinates remain 1-based inclusive. Keep the `resolution` chromosome, position, strand, and transcript ID consistent with the corresponding partner.
+Use this template when the user requests genomic coordinates, a chromosome ideogram, or an exact breakpoint annotation. The numbers are internally consistent examples only; replace them with real annotation. This example resolves both breakpoints inside an exon, so it includes the exon-specific resolution fields.
+
+```json
+{
+  "specVersion": "0.1",
+  "assembly": "hg38",
+  "coordinateSystem": "1-based-inclusive",
+  "locale": "en",
+  "fivePrime": {
+    "gene": {
+      "symbol": "GENE5",
+      "id": "GENE5_ID",
+      "displayName": "Gene 5"
+    },
+    "chromosome": "chr1",
+    "breakpoint": 100250,
+    "strand": "+",
+    "transcript": {
+      "id": "TX5",
+      "displayName": "GENE5 transcript",
+      "exons": [
+        { "label": "1", "id": "TX5_EXON_1", "genomicStart": 100000, "genomicEnd": 100099, "type": "coding" },
+        { "label": "2", "id": "TX5_EXON_2", "genomicStart": 100150, "genomicEnd": 100249, "type": "coding" },
+        { "label": "3", "id": "TX5_EXON_3", "genomicStart": 100250, "genomicEnd": 100349, "type": "coding", "breakpoint": true }
+      ]
+    },
+    "resolution": {
+      "transcriptId": "TX5",
+      "chromosome": "chr1",
+      "position": 100250,
+      "strand": "+",
+      "region": "exon",
+      "codingRegion": "cds",
+      "exonNumber": 3,
+      "exonOffset": 1,
+      "breakpointLocation": "boundary",
+      "cytoband": "p36.33"
+    },
+    "cytoband": "p36.33",
+    "chromosomeLength": 248956422
+  },
+  "threePrime": {
+    "gene": {
+      "symbol": "GENE3",
+      "id": "GENE3_ID",
+      "displayName": "Gene 3"
+    },
+    "chromosome": "chr2",
+    "breakpoint": 200500,
+    "strand": "-",
+    "transcript": {
+      "id": "TX3",
+      "displayName": "GENE3 transcript",
+      "exons": [
+        { "label": "1", "id": "TX3_EXON_1", "genomicStart": 200000, "genomicEnd": 200099, "type": "coding" },
+        { "label": "2", "id": "TX3_EXON_2", "genomicStart": 200300, "genomicEnd": 200399, "type": "coding" },
+        { "label": "3", "id": "TX3_EXON_3", "genomicStart": 200450, "genomicEnd": 200599, "type": "coding", "breakpoint": true },
+        { "label": "4", "id": "TX3_EXON_4", "genomicStart": 200700, "genomicEnd": 200799, "type": "coding" }
+      ]
+    },
+    "resolution": {
+      "transcriptId": "TX3",
+      "chromosome": "chr2",
+      "position": 200500,
+      "strand": "-",
+      "region": "exon",
+      "codingRegion": "cds",
+      "exonNumber": 3,
+      "exonOffset": 100,
+      "breakpointLocation": "interior",
+      "cytoband": "q21.1"
+    },
+    "cytoband": "q21.1",
+    "chromosomeLength": 242193529
+  },
+  "fusion": {
+    "name": "GENE5::GENE3",
+    "fivePrimeExons": [
+      { "label": "1", "genomicStart": 100000, "genomicEnd": 100099 },
+      { "label": "2", "genomicStart": 100150, "genomicEnd": 100249 },
+      { "label": "3", "genomicStart": 100250, "genomicEnd": 100250, "breakpoint": true }
+    ],
+    "threePrimeExons": [
+      { "label": "3", "genomicStart": 200450, "genomicEnd": 200499, "breakpoint": true },
+      { "label": "2", "genomicStart": 200300, "genomicEnd": 200399 },
+      { "label": "1", "genomicStart": 200000, "genomicEnd": 200099 }
+    ]
+  },
+  "chromosomeView": { "show": true, "showCytoband": true },
+  "geneView": {
+    "layout": "genomic",
+    "visibleExonsBefore": 2,
+    "visibleExonsAfter": 2
+  },
+  "style": {
+    "primaryColor": "#2563eb",
+    "secondaryColor": "#7c3aed",
+    "breakpointColor": "#dc2626",
+    "fontFamily": "Arial, sans-serif",
+    "fontSize": 14
+  },
+  "provenance": {
+    "source": "annotation provider",
+    "annotationVersion": "release-id",
+    "generatedAt": "2026-01-01T00:00:00Z"
+  }
+}
+```
+
+The template's `resolution` objects are the exon form. To model an intronic breakpoint, change that partner's `breakpoint` and the matching `fusion` segment coordinates to the intron base, then replace the location-specific part with an object like this. Remove `exonNumber`, `exonOffset`, and `breakpointLocation`:
+
+```json
+{
+  "transcriptId": "TX5",
+  "chromosome": "chr1",
+  "position": 100125,
+  "strand": "+",
+  "region": "intron",
+  "codingRegion": "noncoding",
+  "intronNumber": 1
+}
+```
+
+For a point outside the selected transcript annotation, change the partner `breakpoint` and matching `resolution.position`, use `region: "outside"`, omit both exon/intron numbers, and use `codingRegion: "unknown"` unless the source explicitly supplies another value:
+
+```json
+{
+  "transcriptId": "TX5",
+  "chromosome": "chr1",
+  "position": 99999,
+  "strand": "+",
+  "region": "outside",
+  "codingRegion": "unknown"
+}
+```
+
+### Field formats and invariants
+
+Use these rules while filling either template. “Required” below means required by the PlotSpec schema; genomic-view requirements are additionally required by this skill when that view is requested.
+
+Top-level fields:
+
+| Field | Format | Required / use |
+| --- | --- | --- |
+| `specVersion` | Exact string `"0.1"` | Required. |
+| `assembly` | Non-empty string such as `"hg38"` or `"hg19"` | Optional in a schematic; required for a genomic/chromosome view. Keep it at the top level, never inside a partner. |
+| `coordinateSystem` | Exact string `"1-based-inclusive"` | Required. Every genomic start, end, breakpoint, position, and cytoband bound uses this convention. |
+| `locale` | Exactly `"en"` or `"zh-CN"` | Required. |
+| `fivePrime` / `threePrime` | Partner object | Required. `fivePrime` is the 5′ source and `threePrime` is the 3′ source; do not swap them. |
+| `fusion` | Object containing `name`, `fivePrimeExons`, and `threePrimeExons` | Required. |
+| `chromosomeView.show` | Boolean | Optional; set `true` only when chromosome data is supplied. |
+| `chromosomeView.showCytoband` | Boolean | Optional; `true` requests cytoband labels/bands when available. |
+| `geneView.layout` | `"schematic"` or `"genomic"` | Optional; use `"genomic"` for coordinate-scaled gene tracks. |
+| `geneView.visibleExonsBefore` / `visibleExonsAfter` | Non-negative integer (`0`, `1`, `2`, …) | Optional number of neighboring exons to show around each breakpoint. |
+| `style.primaryColor`, `secondaryColor`, `breakpointColor`, `fontFamily` | Non-empty string; CSS color strings are recommended for colors | Optional. |
+| `style.fontSize` | Positive number | Optional. |
+| `provenance.source`, `annotationVersion`, `annotationChecksum`, `generatedAt` | String; use an ISO-8601 timestamp for `generatedAt` | Optional metadata; do not fabricate provenance. |
+
+Partner fields (`fivePrime` and `threePrime`):
+
+| Field | Format | Required / use |
+| --- | --- | --- |
+| `gene.symbol` | Non-empty string, normally the approved gene symbol | Required. |
+| `gene.id` | Non-empty string such as an Ensembl gene ID | Optional. |
+| `gene.displayName` | String | Optional human-readable label. |
+| `chromosome` | Non-empty string such as `"chr1"`, `"1"`, or `"X"` | Optional for schematic; required for genomic view and must match `resolution.chromosome` when resolution is present. |
+| `breakpoint` | Positive integer genomic base | Optional for schematic; required for genomic view and must equal `resolution.position` when resolution is present. |
+| `strand` | Exactly `"+"` or `"-"` | Optional for schematic; required for genomic view and must equal `resolution.strand` when resolution is present. |
+| `transcript.id` | Non-empty string | Optional for schematic; required when using `resolution`, and must equal `resolution.transcriptId`. |
+| `transcript.displayName` | String | Optional. |
+| `transcript.exons` | Array of exon objects (including a one-item placeholder for an abstract schematic) | Required. Preserve supplied biological exon data. |
+| `availableTranscripts[]` | Objects with non-empty `id` and optional string `displayName` | Optional list of alternative transcript choices; IDs must be unique. |
+| `cytoband` | Non-empty string such as `"p36.33"` | Optional label for this partner's breakpoint. |
+| `chromosomeLength` | Positive integer | Optional chromosome length; if supplied, breakpoint, resolution position, exon ends, and band ends must not exceed it. |
+| `chromosomeBands[]` | Objects with `name` (non-empty string), positive integer `start`/`end` (`start <= end`), optional string `stain` | Optional ideogram bands; keep them sorted and non-overlapping. |
+| `manual` | Boolean | Optional; set `true` for an explicitly coordinate-free/manual partner. |
+| `baseSequence` | String | Optional nucleotide sequence to render; do not add whitespace or claim a sequence that was not supplied. |
+
+Exon objects (`transcript.exons[]` and `fusion.*Exons[]`):
+
+| Field | Format | Required / use |
+| --- | --- | --- |
+| `label` | Non-empty string; numeric exon labels should still be strings (`"1"`, `"13"`) | Required. It is the displayed segment label, not a range expression. |
+| `id` | Non-empty string | Optional exon identifier. |
+| `genomicStart` / `genomicEnd` | Positive integers, supplied together, with `genomicStart <= genomicEnd` | Optional biological coordinates; both use 1-based inclusive bases. |
+| `width` | Positive number | Optional visual width override; use only when a visual width is intentionally requested. |
+| `type` | `"coding"`, `"utr"`, or `"unknown"` | Optional biological classification. |
+| `breakpoint` | Boolean | Optional marker for the segment containing/at the breakpoint. |
+| `visible` | Boolean | Optional; `false` hides the segment. |
+| `biological` | Object with optional `genomicStart`, `genomicEnd`, `type`, and `breakpoint` in the same formats above | Optional biological override; coordinates must be supplied as a pair. |
+| `visual` | Object with optional non-empty string `label`, positive number `width`, and boolean `visible` | Optional visual-only override; it does not change biological coordinates. |
+
+Fusion fields:
+
+| Field | Format | Required / use |
+| --- | --- | --- |
+| `fusion.name` | Non-empty string, conventionally `"GENE5::GENE3"` | Required. |
+| `fusion.fivePrimeExons` / `threePrimeExons` | Arrays of exon objects | Required. Use one object per retained segment, in transcript direction; keep at least one visible segment across the two arrays. Do not replace `[ {"label":"1"}, {"label":"2"}, {"label":"13"} ]` with one `"1-13"` object unless the user explicitly wants `1-13` as a visual label. |
+
+Resolution fields (`partner.resolution`):
+
+| Field | Format | Required / use |
+| --- | --- | --- |
+| `transcriptId` | Non-empty string | Required when `resolution` is present; equal to `partner.transcript.id`. |
+| `chromosome` | Non-empty string | Required; equal to the partner chromosome (with `chr` prefix differences normalized). |
+| `position` | Positive integer | Required; equal to the partner `breakpoint`. |
+| `strand` | `"+"` or `"-"` | Required; equal to the partner strand. |
+| `region` | `"exon"`, `"intron"`, or `"outside"` | Required. Choose the location category rather than guessing. |
+| `codingRegion` | `"cds"`, `"utr"`, `"noncoding"`, or `"unknown"` | Required; use `"unknown"` when annotation does not establish it. |
+| `exonNumber` | Positive integer | Required only when `region` is `"exon"`; use the transcript exon number. |
+| `exonOffset` | Positive integer | Optional only for an exon; 1-based offset in transcript direction (`position - start + 1` on `+`, `end - position + 1` on `-`). Requires `exonNumber`. |
+| `intronNumber` | Positive integer | Required only when `region` is `"intron"`; number the intron by transcript direction. |
+| `breakpointLocation` | `"boundary"` or `"interior"` | Optional only for an exon; use `"boundary"` at an exon edge and `"interior"` inside the exon. |
+| `cytoband` | Non-empty string | Optional cytoband label for this breakpoint. |
+
+When biological exon coordinates are supplied, make `region`, the exon/intron number, and `exonOffset` agree with those coordinates. Never send a partial `resolution` object: omit it until all six base fields are known.
+
 
 ## Call the API
 
