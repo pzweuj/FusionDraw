@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { webcrypto } from "node:crypto";
-import { MemoryAnnotationProvider, StaticAnnotationProvider } from "./index";
+import { MemoryAnnotationProvider, StaticAnnotationProvider } from "./index.js";
 import type { GeneAnnotation } from "@fusionview/core";
 
 afterEach(() => vi.unstubAllGlobals());

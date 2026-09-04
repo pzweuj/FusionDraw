@@ -5,10 +5,11 @@
   "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "vite --config apps/demo/vite.config.ts",
-    "build": "tsc -b && vite build --config apps/demo/vite.config.ts",
+    "build": "tsc -b && pnpm test:dist && vite build --config apps/demo/vite.config.ts",
     "typecheck": "tsc -b --pretty false",
     "test": "vitest run && pnpm test:annotation",
     "test:annotation": "python3 -m unittest discover -s annotation-builder -p \"test_*.py\" || python -m unittest discover -s annotation-builder -p \"test_*.py\"",
+    "test:dist": "node scripts/verify-esm-build.mjs",
     "build:annotation": "python3 annotation-builder/build_annotation.py || python annotation-builder/build_annotation.py"
   },
   "workspaces": ["apps/*", "packages/*"],

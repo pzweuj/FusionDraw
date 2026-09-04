@@ -2,7 +2,7 @@ import type {
   PlotExon,
   PlotExonBiologicalOverride,
   PlotExonVisualOverride,
-} from "./types";
+} from "./types.js";
 
 type BiologicalPatch = Partial<PlotExonBiologicalOverride>;
 type VisualPatch = Partial<PlotExonVisualOverride>;

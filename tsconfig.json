@@ -1,5 +1,15 @@
 {
   "files": [],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@fusionview/core": ["packages/core/src/index.ts"],
+      "@fusionview/annotation": ["packages/annotation/src/index.ts"],
+      "@fusionview/layout": ["packages/layout/src/index.ts"],
+      "@fusionview/renderer-svg": ["packages/renderer-svg/src/index.ts"],
+      "@fusionview/react": ["packages/react/src/index.tsx"]
+    }
+  },
   "references": [
     { "path": "packages/core/tsconfig.json" },
     { "path": "packages/annotation/tsconfig.json" },

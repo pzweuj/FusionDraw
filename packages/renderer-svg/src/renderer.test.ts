@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { renderFusionSvg } from "./index";
+import { renderFusionSvg } from "./index.js";
 import type { FusionPlotSpec } from "@fusionview/core";
 import { layoutFusion } from "@fusionview/layout";
 

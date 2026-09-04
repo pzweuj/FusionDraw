@@ -1,5 +1,5 @@
-import type { FusionPlotSpec } from "./types";
-import { validatePlotSpec } from "./validation";
+import type { FusionPlotSpec } from "./types.js";
+import { validatePlotSpec } from "./validation.js";
 
 export function serializePlotSpec(spec: FusionPlotSpec): string {
   const errors = validatePlotSpec(spec);

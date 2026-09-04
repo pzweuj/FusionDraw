@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { applyPlotExonEdit, normalizeAssembly, normalizeBreakpoint, normalizeChromosome, parsePlotSpec, resolveFusion, serializePlotSpec, validatePlotSpec } from "./index";
-import type { GeneAnnotation } from "./types";
+import { applyPlotExonEdit, normalizeAssembly, normalizeBreakpoint, normalizeChromosome, parsePlotSpec, resolveFusion, serializePlotSpec, validatePlotSpec } from "./index.js";
+import type { GeneAnnotation } from "./types.js";
 
 const gene: GeneAnnotation = {
   id: "gene-1", symbol: "TEST", chromosome: "chr1", start: 100, end: 1000, strand: "+",

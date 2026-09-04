@@ -1,4 +1,4 @@
-import type { Assembly, BreakpointInput, Strand } from "./types";
+import type { Assembly, BreakpointInput, Strand } from "./types.js";
 
 export function normalizeChromosome(chromosome: string): string {
   if (typeof chromosome !== "string" || !chromosome.trim()) throw new Error("Chromosome is required.");

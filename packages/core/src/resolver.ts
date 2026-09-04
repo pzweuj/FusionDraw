@@ -12,8 +12,8 @@ import type {
   ResolutionMessage,
   ResolutionResult,
   TranscriptAnnotation,
-} from "./types";
-import { normalizeAssembly, normalizeBreakpoint, normalizeChromosome } from "./normalize";
+} from "./types.js";
+import { normalizeAssembly, normalizeBreakpoint, normalizeChromosome } from "./normalize.js";
 
 type PartnerRole = "fivePrime" | "threePrime";
 

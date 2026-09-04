@@ -1,5 +1,5 @@
-import type { FusionPlotSpec } from "./types";
-import { normalizeChromosome } from "./normalize";
+import type { FusionPlotSpec } from "./types.js";
+import { normalizeChromosome } from "./normalize.js";
 
 type RecordValue = Record<string, unknown>;
 

@@ -1,8 +1,9 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { renderPlotSpecJson } from "../apps/demo/src/api-handler";
-import { RENDER_SVG_API_PATH } from "../apps/demo/src/api-contract";
+import { parsePlotSpec } from "@fusionview/core";
+import { renderFusionSvg } from "@fusionview/renderer-svg";
 
 const MAX_BODY_BYTES = 2 * 1024 * 1024;
+const RENDER_SVG_API_PATH = "/api/render-svg";
 
 type VercelRequest = IncomingMessage & { body?: unknown };
 
@@ -124,7 +125,7 @@ export default async function handler(req: VercelRequest, res: ServerResponse): 
 
   let svg: string;
   try {
-    svg = renderPlotSpecJson(body);
+    svg = renderFusionSvg(parsePlotSpec(body));
   } catch (error) {
     sendJson(res, 400, { error: error instanceof Error ? error.message : String(error) });
     return;

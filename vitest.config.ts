@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 const rootDir = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineConfig({
-  test: { environment: "node", include: ["packages/**/*.test.ts", "apps/**/*.test.ts"] },
+  test: { environment: "node", include: ["packages/**/*.test.ts", "apps/**/*.test.ts", "api/**/*.test.ts"] },
   resolve: {
     alias: {
       "@fusionview/core": resolve(rootDir, "packages/core/src"),
